@@ -3,5 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "Nathan Reed <reednj@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn run build:babel && yarn run build:browser",
+    "build:babel": "babel src -d lib",
+    "build:browser": "browserify lib/viewport.flow.js -o lib/viewport.js && rm lib/*.flow.js"
+  },
+  "dependencies": {
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-preset-flow": "^6.23.0"
+  }
 }
