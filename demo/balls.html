@@ -15,41 +15,12 @@
 	</style>
 
 
-    <script type='text/javascript' src='../lib/viewport.js'></script>
+    <script type='text/javascript' src='../node_modules/requirejs/require.js'></script>
+    
     <script type='text/javascript'>
-        class App {
-            constructor() {
-                
-                var element = document.getElementById('canvas')
-                this.viewport = new StaticViewport(element, {});
-                this.center = this.viewport.getCenter();
-                this.viewport.start();
-                this.balls = this.balls || [];
-                
-                setInterval(() => {
-                    if(this.balls.length < 10) {
-                        this.addBall();
-                    } else {
-                        this.removeBall();
-                    }
-
-                    console.log(this.balls.length);
-                }, 500);
-            }
-
-            addBall() {
-                var b = new BouncingBall({x: this.center.x, y: this.center.y});
-                this.balls.push(b);
-                this.viewport.add(b);
-            }
-
-            removeBall() {
-                var b = this.balls.shift();
-                b.renderingFinished = true;
-            }
-        }
-
-        window.addEventListener('load', () => window._app = new App());
+        require(['./lib/balls.flow.js'], function( _) {
+            _app = new _.App();
+        });
 	</script>
 
 </head>

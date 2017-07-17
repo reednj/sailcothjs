@@ -49,7 +49,7 @@
 //  - renderingFinished (bool) - when set to true, the object will be removed from the render queue on the next
 //		frame. It has to be manually readded in order to get it to display again
 //
-class StaticViewport {
+export class StaticViewport {
     element:?HTMLCanvasElement;
     options:Object;
     tick:number;
@@ -123,7 +123,7 @@ class StaticViewport {
 		return this.refresh(true);
 	}
 
-	refresh(autoRedraw) {
+	refresh(autoRedraw:boolean) {
 		if(this.waitingForFrame === false && this.options.autoRedraw === false) {
 			requestAnimationFrame(this.redraw.bind(this));
 
@@ -171,18 +171,16 @@ class StaticViewport {
 		this.renderQueueChanged = false;
 	}
 
-	renderObjects(renderQueue, sinceLastFrame) {
+	renderObjects(renderQueue:IRenderable[], sinceLastFrame:number) {
 		renderQueue.forEach(function(o) {
 			this.renderObject(o, sinceLastFrame);
 		}.bind(this));
 	}
 
-	renderObject(o, sinceLastFrame) {
-		if(!o) {
-			return;
-		}
-
-		o.render(this, sinceLastFrame);
+	renderObject(o:IRenderable, sinceLastFrame:number) {
+		if(o) {
+			o.render(this, sinceLastFrame);
+		}		
 	}
 
 	add(o:IRenderable) {
@@ -243,15 +241,13 @@ class StaticViewport {
 	}
 }
 
-
-
-interface IRenderable {
+export interface IRenderable {
     viewport:StaticViewport;
     renderingFinished:boolean;
     render(viewport:StaticViewport, sinceLastFrame:number):void;
 }
 
-class ViewportObject implements IRenderable {
+export class ViewportObject implements IRenderable {
     x:number;
     y:number;
     viewport:StaticViewport;
@@ -299,70 +295,3 @@ class RotatingBox extends ViewportObject {
         this.angle += (sinceLastFrame / 1000) * Math.PI * 0.25;
     }
 }
-
-class BouncingBall extends ViewportObject {
-    xv:number;
-    yv:number;
-    color:string;
-    constructor(options) {
-        super(options);
-        this.color = '#fd4';
-        this._initVelocity(150);
-    }
-
-    _initVelocity(max:number) {
-        this.xv = this.randomRange(-max, max);
-        this.yv = this.randomRange(-max, max);
-    }
-
-    // put this somewhere better?
-    randomRange(from:number, to:number):number {
-         return (to - from) * Math.random() + from;
-    }
-
-    render(viewport:StaticViewport, sinceLastFrame:number) {
-        super.render(viewport, sinceLastFrame);
-        viewport.context.fillStyle = this.color;
-        viewport.context.beginPath();
-        viewport.context.arc(this.x, this.y, 6.0, 0, Math.PI*2);
-        viewport.context.fill();
-    }
-
-    update(sinceLastFrame:number) {
-        this.x += this.xv * (sinceLastFrame / 1000);
-        this.y += this.yv * (sinceLastFrame / 1000);
-
-        if(this.viewport) {
-            if(this.y > this.viewport._height || this.y < 0) {
-                this.xv *= ( 1 * this.randomRange(0.80, 1.20));
-                this.yv *= (-1 * this.randomRange(0.80, 1.20));
-            }
-
-            if(this.x > this.viewport._width || this.x < 0) {
-                this.xv *= (-1 * this.randomRange(0.80, 1.20));
-                this.yv *= ( 1 * this.randomRange(0.80, 1.20));
-            }
-
-            if(this.y > this.viewport._height) {
-                this.y = this.viewport._height - 1;
-            }
-
-            if(this.y < 0) {
-                this.y = 0 + 1;
-            }
-
-            if(this.x > this.viewport._width) {
-                this.x = this.viewport._width - 1;
-            }
-
-            if(this.x < 0) {
-                this.x = 0 + 1;
-            }
-
-        }
-    }
-}
-
-window.StaticViewport = StaticViewport;
-window.RotatingBox = RotatingBox;
-window.BouncingBall = BouncingBall;
