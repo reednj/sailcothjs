@@ -155,7 +155,7 @@ class StaticViewport {
 
 		// after the redraw event there might be some objects we dont want to render
 		// anymore. So we get a list of them, and remove them from the render queue
-		this.stopRendering(this.renderQueue.filter(function(o) {return o.renderingFinished === true; }));
+		this.renderQueue = this.renderQueue.filter(o => !o.renderingFinished);
 
 		// we want to calulate the time since the last frame so that things can be animated consistantly
 		var currentTime = new Date();
@@ -223,16 +223,6 @@ class StaticViewport {
 		// now we need to sort the render queue by zindex to make sure it is rendered in the same order
 		this.renderQueue.sort(function(a, b) { return (a.zIndex || 1) - (b.zIndex || 1);});
 
-		return this;
-	}
-
-	stopRendering(o) {
-		if(!o) {
-    		return;
-    	}
-
-        
-		this.renderQueueChanged = true;
 		return this;
 	}
 
@@ -310,5 +300,69 @@ class RotatingBox extends ViewportObject {
     }
 }
 
+class BouncingBall extends ViewportObject {
+    xv:number;
+    yv:number;
+    color:string;
+    constructor(options) {
+        super(options);
+        this.color = '#fd4';
+        this._initVelocity(150);
+    }
+
+    _initVelocity(max:number) {
+        this.xv = this.randomRange(-max, max);
+        this.yv = this.randomRange(-max, max);
+    }
+
+    // put this somewhere better?
+    randomRange(from:number, to:number):number {
+         return (to - from) * Math.random() + from;
+    }
+
+    render(viewport:StaticViewport, sinceLastFrame:number) {
+        super.render(viewport, sinceLastFrame);
+        viewport.context.fillStyle = this.color;
+        viewport.context.beginPath();
+        viewport.context.arc(this.x, this.y, 6.0, 0, Math.PI*2);
+        viewport.context.fill();
+    }
+
+    update(sinceLastFrame:number) {
+        this.x += this.xv * (sinceLastFrame / 1000);
+        this.y += this.yv * (sinceLastFrame / 1000);
+
+        if(this.viewport) {
+            if(this.y > this.viewport._height || this.y < 0) {
+                this.xv *= ( 1 * this.randomRange(0.80, 1.20));
+                this.yv *= (-1 * this.randomRange(0.80, 1.20));
+            }
+
+            if(this.x > this.viewport._width || this.x < 0) {
+                this.xv *= (-1 * this.randomRange(0.80, 1.20));
+                this.yv *= ( 1 * this.randomRange(0.80, 1.20));
+            }
+
+            if(this.y > this.viewport._height) {
+                this.y = this.viewport._height - 1;
+            }
+
+            if(this.y < 0) {
+                this.y = 0 + 1;
+            }
+
+            if(this.x > this.viewport._width) {
+                this.x = this.viewport._width - 1;
+            }
+
+            if(this.x < 0) {
+                this.x = 0 + 1;
+            }
+
+        }
+    }
+}
+
 window.StaticViewport = StaticViewport;
 window.RotatingBox = RotatingBox;
+window.BouncingBall = BouncingBall;

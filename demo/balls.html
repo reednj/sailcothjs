@@ -19,13 +19,33 @@
     <script type='text/javascript'>
         class App {
             constructor() {
-                var element = document.getElementById('canvas')
-                var viewport = new StaticViewport(element, {});
-                var p = viewport.getCenter();
                 
-                viewport.add(new RotatingBox({ x:p.x, y:p.y, size:96 }));
-                viewport.add(new RotatingBox({ x:64, y:64, size:32 }));
-                viewport.start();
+                var element = document.getElementById('canvas')
+                this.viewport = new StaticViewport(element, {});
+                this.center = this.viewport.getCenter();
+                this.viewport.start();
+                this.balls = this.balls || [];
+                
+                setInterval(() => {
+                    if(this.balls.length < 10) {
+                        this.addBall();
+                    } else {
+                        this.removeBall();
+                    }
+
+                    console.log(this.balls.length);
+                }, 500);
+            }
+
+            addBall() {
+                var b = new BouncingBall({x: this.center.x, y: this.center.y});
+                this.balls.push(b);
+                this.viewport.add(b);
+            }
+
+            removeBall() {
+                var b = this.balls.shift();
+                b.renderingFinished = true;
             }
         }
 
