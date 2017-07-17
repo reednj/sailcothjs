@@ -1,17 +1,5 @@
 // @flow
 
-class App {
-    constructor() {
-        var element = document.getElementById('canvas')
-        var viewport = new StaticViewport((element:any), {});
-        var p = viewport.getCenter();
-        viewport.add(new Box({ x:p.x, y:p.y, size:100 }))
-        viewport.start();
-    }
-}
-
-window.addEventListener('load', () => window._app = new App());
-
 // StaticViewport
 //
 // Helper class to handle html5 cavnases and render subobjects in an
@@ -265,35 +253,62 @@ class StaticViewport {
 	}
 }
 
+
+
 interface IRenderable {
     viewport:StaticViewport;
     renderingFinished:boolean;
     render(viewport:StaticViewport, sinceLastFrame:number):void;
 }
 
+class ViewportObject implements IRenderable {
+    x:number;
+    y:number;
+    viewport:StaticViewport;
+    renderingFinished:boolean;
+    constructor(options:{x:number,y:number}) {
+        this.x = options.x;
+        this.y = options.y;
+    }
+
+    render(viewport:StaticViewport, sinceLastFrame:number) {
+        this.update(sinceLastFrame);
+    }
+
+    update(sinceLastFrame:number) {
+    }
+}
+
+
 type BoxOptions = {x:number,y:number,size:number};
 
-class Box implements IRenderable {
+class RotatingBox extends ViewportObject {
     options:BoxOptions;
     renderingFinished:boolean;
     viewport:StaticViewport;
     angle:number;
     constructor(options:BoxOptions) {
+        super(options);
         this.options = options || {};
         this.renderingFinished = false;
         this.angle = 0;
     }
 
     render(viewport:StaticViewport, sinceLastFrame:number) {
+        super.render(viewport, sinceLastFrame);
+
         viewport.context.fillStyle = "#ff8888";
-        
         viewport.context.save();
-    
         viewport.context.translate(this.options.x, this.options.y);
         viewport.context.rotate(this.angle);
         viewport.context.fillRect(-this.options.size/2, -this.options.size/2, this.options.size, this.options.size);
         viewport.context.restore();
+    }
 
+    update(sinceLastFrame) {
         this.angle += (sinceLastFrame / 1000) * Math.PI * 0.25;
     }
 }
+
+window.StaticViewport = StaticViewport;
+window.RotatingBox = RotatingBox;
