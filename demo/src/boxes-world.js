@@ -1,7 +1,7 @@
 // @flow
 
-import { Renderable, WorldViewport, Viewport } from '../../src/viewport.flow'
-import * as Box from './box.flow'
+import { Renderable, WorldViewport, Viewport } from '../../src/viewport'
+import * as Box from './box'
 
 // just ignore jquery errors
 declare function $(any):any;
