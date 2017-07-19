@@ -18,7 +18,7 @@ export class App {
                 let p = this.viewport.center;
                 this.viewport.setCenter(p.x + move.x, p.y + move.y);
              },
-            fillElement: document.getElementById('container')
+            sizingElement: document.getElementById('container')
         });
 
         this.viewport.setCenter(0, 0);
