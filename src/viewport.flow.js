@@ -57,9 +57,14 @@ export class Viewport {
     
     _width:number;
     _height:number;
-    _scale:number;
+	_scale:number;
+	
+	// if this is set to an element, the canvas will try to fill it
+	// as much as possible when the window is resized
+	fillElement:?HTMLElement;
 	constructor(element:HTMLCanvasElement, options:Object) {
 		this.element = element;
+		this.fillElement = options.fillElement || null;
         
         this.options = options || {};
       	this.options.autoRedraw = false;
@@ -87,28 +92,20 @@ export class Viewport {
 
 	// same as 'fillParent' but easier to remember
 	autosize() {
-		this.fillParent();
-	}
+		if(this.canvas && this.fillElement) {
+			var parentSize = {
+				x: this.fillElement.clientWidth || 0,
+				y: this.fillElement.clientHeight || 0
+			}
 
-	// makes canvas fill the parent DOM object, a kind of simple
-	// autosizing
-	//
-	// It will call an onResize event on the render object if it exists
-	// this function should have the signature:
-	//	onResize(width, height, viewport)
-	// this method should be used to reposition the object appropriately on
-	// the canvas
-	fillParent() {
-		if(this.canvas) {
-			var parentSize = { x:0, y:0 }; //this.canvas.getParent().getSize();
 			this.canvas.width = parentSize.x;
 			this.canvas.height = parentSize.y;
 
-			this.renderQueue.forEach(function(o) {
+			this.renderQueue.forEach(o => {
 				if(typeof o.onResize == 'function') {
 					o.onResize(this._width, this._height, this);
 				}
-			}.bind(this));
+			});
 
 			this.updateDimensions();
 		}
@@ -241,6 +238,9 @@ export class WorldViewport extends Viewport {
 	staticQueue:IRenderable[];
 	worldQueue:IRenderable[];
 
+	_center:?Point;
+	_bounds:?Rect;
+
 	constructor(element:HTMLCanvasElement, options:Object = {}) {
 		super(element, options);
 		this.origin = this.options.origin || {x:0, y:0};
@@ -320,11 +320,13 @@ export class WorldViewport extends Viewport {
 	// instead of the top-left. x and y will be the world coordinates of the center of the 
 	// canvas
 	setCenter(x:number, y:number) {
+		this._center = null;
+		this._bounds = null;
 		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
 	}
 
 	get center():Point {
-		return {
+		return this._center = this._center || {
 			x: this.origin.x + Math.round(this._width / 2),
 			y: this.origin.y + Math.round(this._height / 2)
 		};
@@ -334,7 +336,7 @@ export class WorldViewport extends Viewport {
 	// this is mainly used to decide if a given object is visible on the
 	// canvas and should be rendered
 	get bounds():Object {
-		return {
+		return this._bounds = this._bounds || {
 			x: this.origin.x,
 			y: this.origin.y,
 			width: this._width,

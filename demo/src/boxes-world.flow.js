@@ -7,7 +7,7 @@ import * as Box from './box.flow'
 declare function $(any):any;
 
 export class App {
-    viewport:any;
+    viewport:WorldViewport;
     constructor() {
         let element = document.getElementById('canvas')
         let move:{x:number,y:number} = {x:0,y:0}
@@ -17,18 +17,25 @@ export class App {
             onRedraw: () => { 
                 let p = this.viewport.center;
                 this.viewport.setCenter(p.x + move.x, p.y + move.y);
-             }
+             },
+            fillElement: document.getElementById('container')
         });
 
+        this.viewport.autosize();
         this.viewport.setCenter(0, 0);
         this.viewport.start();
 
+        // add a bunch of rotating boxes, plus a line at 0,0
         this.viewport.add(new Box.RotatingBox({ x: 0, y: 0, size: 64 }));
         this.viewport.add(new Box.RotatingBox({ x: 0, y: 120, size: 48 }));
         this.viewport.add(new Box.RotatingBox({ x: 0, y: -120, size: 48 }));
         this.viewport.add(new Box.RotatingBox({ x: 150, y: 0, size: 48 }));
         this.viewport.add(new Box.RotatingBox({ x: -150, y: 0, size: 48 }));
         this.viewport.add(new GridLines());
+
+        // stop after 10 seconds so we don't load the browser
+        // too much
+        setTimeout(() => this.viewport.stop(), 10000);
 
         $(window).keydown((e) => {
             if(e.key == 'w') {
