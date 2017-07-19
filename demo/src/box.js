@@ -1,5 +1,5 @@
 // @flow
-import {ViewportObject, Viewport} from '../../src/viewport'
+import {ViewportObject, Viewport} from '../../src/sailcloth'
 
 export type BoxOptions = {x:number,y:number,size:number};
 
