@@ -10,18 +10,30 @@ export interface IRenderable {
     render(viewport:StaticViewport, sinceLastFrame:number):void;
 }
 
-export class ViewportObject implements IRenderable {
+export class Renderable {
+	viewport:StaticViewport;
+	renderingFinished:boolean;
+	positionType: "world" | "static";
+	zIndex:number;
+	constructor() {
+		this.renderingFinished = false;
+		this.positionType = "world";
+		this.zIndex = 100;
+	}
+
+	render(viewport:StaticViewport, sinceLastFrame:number) {
+	}
+}
+
+export class ViewportObject extends Renderable {
     x:number;
 	y:number;
 	width:?number;
 	height:?number;
-    viewport:StaticViewport;
-	renderingFinished:boolean;
-	positionType: "world" | "static";
     constructor(options:{x:number,y:number}) {
-        this.x = options.x;
+		super();
+		this.x = options.x;
 		this.y = options.y;
-		this.positionType = "static"
     }
 
     render(viewport:StaticViewport, sinceLastFrame:number) {
@@ -226,12 +238,12 @@ export class StaticViewport {
 
 
 
-class WorldViewport extends StaticViewport {
+export class WorldViewport extends StaticViewport {
 	origin:Point;
 	staticQueue:IRenderable[];
 	worldQueue:IRenderable[];
 
-	constructor(element, options) {
+	constructor(element:HTMLCanvasElement, options:Object = {}) {
 		super(element, options);
 		this.origin = this.options.origin || {x:0, y:0};
 
@@ -241,22 +253,14 @@ class WorldViewport extends StaticViewport {
 		this._width = 0.0;
 		this._height = 0.0;
 		this._scale = 1.0;
+		this.updateDimensions();
 	}
 
-	setScale(n) {
+	setScale(n:number) {
 		if(n != null) {
 			this.context.scale(n, n);
 			this._scale = n;
 			this.updateDimensions();
-		}
-	}
-
-	addEvent(name, fn) {
-		if(typeof fn != 'function')
-			return;
-
-		if(name == 'mousemove') {
-			this.options.onMouseMove = fn;
 		}
 	}
 
@@ -265,7 +269,7 @@ class WorldViewport extends StaticViewport {
 		this.worldQueue  = renderQueue.filter(o => o.positionType == 'world');
 	}
 
-	renderObjects(renderQueue, sinceLastFrame) {
+	renderObjects(renderQueue:IRenderable[], sinceLastFrame:number) {
 		if(this.renderQueueChanged === true) {
 			this.updateQueues(renderQueue);
 		}
@@ -306,7 +310,7 @@ class WorldViewport extends StaticViewport {
 	// this sets the canvas (0,0) (in screen coords) to the x,y arguments
 	// in world coordinates. Put another way, the x,y provided as arguments
 	// will be the world coordinates of the top left corner of the canvas.
-	setOrigin(x, y) {
+	setOrigin(x:number, y:number) {
 		this.origin = {x: x, y: y};
 	}
 
@@ -317,7 +321,7 @@ class WorldViewport extends StaticViewport {
 	// this is the same as setOrigin, but it uses the center of the canvas as the reference
 	// instead of the top-left. x and y will be the world coordinates of the center of the 
 	// canvas
-	setCenter(x, y) {
+	setCenter(x:number, y:number) {
 		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
 	}
 

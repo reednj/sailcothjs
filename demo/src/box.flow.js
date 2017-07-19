@@ -1,12 +1,10 @@
 // @flow
-import {ViewportObject, StaticViewport} from '../lib/viewport.flow'
+import {ViewportObject, StaticViewport} from '../../src/viewport.flow'
 
-type BoxOptions = {x:number,y:number,size:number};
+export type BoxOptions = {x:number,y:number,size:number};
 
 export class RotatingBox extends ViewportObject {
     options:BoxOptions;
-    renderingFinished:boolean;
-    viewport:StaticViewport;
     angle:number;
     constructor(options:BoxOptions) {
         super(options);

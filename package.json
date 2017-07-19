@@ -8,12 +8,15 @@
     "build": "yarn run build:babel",
     "build:babel": "babel src -d lib && babel src demo/src -d demo/lib",
     "build:browser": "browserify lib/viewport.flow.js -o lib/viewport.js && rm lib/*.flow.js",
-    "build:demo":"babel src demo/src -d demo/lib --source-maps --watch"
+    "build:demo": "babel src demo/src -d demo/lib --source-maps --watch"
+  },
+  "devDependencies": {
+    "babel-plugin-module-alias": "^1.6.0",
+    "babel-plugin-module-resolver": "^2.7.1",
+    "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
+    "babel-preset-flow": "^6.23.0"
   },
   "dependencies": {
-    "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
-    "babel-preset-flow": "^6.23.0",
     "jquery": "^3.2.1",
     "requirejs": "^2.3.3"
   }
