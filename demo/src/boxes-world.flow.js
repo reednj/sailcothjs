@@ -21,7 +21,6 @@ export class App {
             fillElement: document.getElementById('container')
         });
 
-        this.viewport.autosize();
         this.viewport.setCenter(0, 0);
         this.viewport.start();
 

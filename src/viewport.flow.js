@@ -61,10 +61,10 @@ export class Viewport {
 	
 	// if this is set to an element, the canvas will try to fill it
 	// as much as possible when the window is resized
-	fillElement:?HTMLElement;
+	sizingElement:?HTMLElement;
 	constructor(element:HTMLCanvasElement, options:Object) {
 		this.element = element;
-		this.fillElement = options.fillElement || null;
+		this.sizingElement = options.sizingElement || null;
         
         this.options = options || {};
       	this.options.autoRedraw = false;
@@ -80,6 +80,11 @@ export class Viewport {
 		this.canvas = this.element;
 		this.context = this.canvas.getContext('2d');
 		this.updateDimensions();
+
+		if(this.sizingElement) {
+			window.addEventListener('resize', () => this.autosize());
+			this.autosize();
+		}
 	}
 
 	updateDimensions() {
@@ -90,12 +95,11 @@ export class Viewport {
 		this._height = this.canvas.height / (this._scale || 1.0);
 	}
 
-	// same as 'fillParent' but easier to remember
 	autosize() {
-		if(this.canvas && this.fillElement) {
+		if(this.canvas && this.sizingElement) {
 			var parentSize = {
-				x: this.fillElement.clientWidth || 0,
-				y: this.fillElement.clientHeight || 0
+				x: this.sizingElement.clientWidth || 0,
+				y: this.sizingElement.clientHeight || 0
 			}
 
 			this.canvas.width = parentSize.x;
