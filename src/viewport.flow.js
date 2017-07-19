@@ -236,8 +236,6 @@ export class StaticViewport {
 	}
 }
 
-
-
 export class WorldViewport extends StaticViewport {
 	origin:Point;
 	staticQueue:IRenderable[];
@@ -314,7 +312,7 @@ export class WorldViewport extends StaticViewport {
 		this.origin = {x: x, y: y};
 	}
 
-	getOrigin() {
+	getOrigin():Point {
 		return this.origin;
 	}
 
@@ -325,7 +323,7 @@ export class WorldViewport extends StaticViewport {
 		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
 	}
 
-	getCenter() {
+	get center():Point {
 		return {
 			x: this.origin.x + Math.round(this._width / 2),
 			y: this.origin.y + Math.round(this._height / 2)
@@ -335,7 +333,7 @@ export class WorldViewport extends StaticViewport {
 	// returns the bounds of the viewport in world coordinates
 	// this is mainly used to decide if a given object is visible on the
 	// canvas and should be rendered
-	getBounds() {
+	get bounds():Object {
 		return {
 			x: this.origin.x,
 			y: this.origin.y,

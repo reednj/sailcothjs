@@ -15,7 +15,7 @@ export class App {
         // $FlowFixMe
         this.viewport = new WorldViewport(element, {
             onRedraw: () => { 
-                let p = this.viewport.getCenter();
+                let p = this.viewport.center;
                 this.viewport.setCenter(p.x + move.x, p.y + move.y);
              }
         });
@@ -32,9 +32,9 @@ export class App {
 
         $(window).keydown((e) => {
             if(e.key == 'w') {
-                move.y = 1;
+                move.y = -1;
             } else if(e.key == 's') {
-                 move.y = -1;
+                 move.y = 1;
             } else if(e.key == 'a') {
                 move.x = -1;
             } else if(e.key == 'd') {
@@ -61,7 +61,7 @@ class GridLines extends Renderable {
 
     render(viewport:StaticViewport, sinceLastFrame:number) {
         if(viewport instanceof WorldViewport) {
-            let bounds = viewport.getBounds();
+            let bounds = viewport.bounds;
             viewport.context.strokeStyle = "#ddd"
             viewport.context.lineWidth - 1.0;
 

@@ -11,6 +11,9 @@ export class RotatingBox extends ViewportObject {
         this.options = options || {};
         this.renderingFinished = false;
         this.angle = 0;
+        
+        this.height = this.options.size;
+        this.width = this.options.size;
     }
 
     render(viewport:StaticViewport, sinceLastFrame:number) {
@@ -27,4 +30,5 @@ export class RotatingBox extends ViewportObject {
     update(sinceLastFrame:number) {
         this.angle += (sinceLastFrame / 1000) * Math.PI * 0.25;
     }
+
 }
