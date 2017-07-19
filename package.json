@@ -5,7 +5,7 @@
   "author": "Nathan Reed <reednj@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "yarn run build:clean && yarn run build:lib",
+    "build": "yarn run build:clean && yarn run build:lib && yarn run build:flow",
     "build:lib": "babel src -d lib --source-maps && babel src demo/src -d demo/lib  --source-maps",
     "build:flow": "flow-copy-source -v src lib",
     "build:browser": "browserify lib/viewport.flow.js -o dist/viewport.js",
