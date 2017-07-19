@@ -5,7 +5,7 @@
     "tasks": [
         {
             "type": "npm",
-            "script": "build:demo",
+            "script": "build:watch",
             "isBackground": true,
             "group": {
                 "kind": "build",

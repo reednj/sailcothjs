@@ -5,16 +5,20 @@
   "author": "Nathan Reed <reednj@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "yarn run build:babel",
-    "build:babel": "babel src -d lib && babel src demo/src -d demo/lib",
-    "build:browser": "browserify lib/viewport.flow.js -o lib/viewport.js && rm lib/*.flow.js",
-    "build:demo": "babel src demo/src -d demo/lib --source-maps --watch"
+    "build": "yarn run build:clean && yarn run build:lib",
+    "build:lib": "babel src -d lib --source-maps && babel src demo/src -d demo/lib  --source-maps",
+    "build:flow": "flow-copy-source -v src lib",
+    "build:browser": "browserify lib/viewport.flow.js -o dist/viewport.js",
+    "build:watch": "babel src demo/src -d demo/lib --source-maps --watch",
+    "build:clean": "rimraf lib/* && rimraf demo/lib/*"
   },
   "devDependencies": {
     "babel-plugin-module-alias": "^1.6.0",
     "babel-plugin-module-resolver": "^2.7.1",
     "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
-    "babel-preset-flow": "^6.23.0"
+    "babel-preset-flow": "^6.23.0",
+    "flow-copy-source": "^1.2.0",
+    "rimraf": "^2.6.1"
   },
   "dependencies": {
     "jquery": "^3.2.1",
