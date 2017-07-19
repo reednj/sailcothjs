@@ -1,5 +1,5 @@
 // @flow
-import * as Viewport from '../lib/viewport.flow'
+import * as Viewport from '../lib/viewport'
 
 export class App {
     viewport:any;
