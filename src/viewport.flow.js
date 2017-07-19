@@ -1,54 +1,37 @@
 // @flow
 
-// StaticViewport
-//
-// Helper class to handle html5 cavnases and render subobjects in an
-// easy way
-//
-// It can be run in one of two modes - with autoRedraw or not turned on. With autoRedraw
-// the canvas will be redraw as often as possible, using requestAnimationFrame (which aims
-// for about 60fps). With it off, the parent will need to call refresh() manually to redraw
-// the canvas.
-//
-// Every time the canvas is redrawn, the render() method is called for every
-// object in the render queue. Add objects to the queue using the add(o) method
-// The only thing is object is required to have is a render method to paint its self to the
-// canvas.
-//
-// The redraw loop has to be explicitly started with start when the helper is created
-//
-// Options:
-//    - autoRedraw (bool) 	- when true the next frame will be requested immediately after the previous
-//    
-// Events
-//	- onRedraw(this) - this event is triggered after the frame is cleared, but before the draw
-//	- onClick(e) - the canvas was clicked. e.canvas.x and e.canvas.y contain the coordinates of the click
-//		realtive to the canvas.
-//
-// Example:
-//		var helper = new CanvasHelper('canvas-id', {autoRedraw: true});
-//
-//		// squareThing.render(helper) gets called at each frame
-//		helper.add(squareThing);
-//
-//		// starts the draw loop.
-//		helper.start();
-//
-// In order to change the order of the rendering, set a zIndex property on the object that is
-// passed to add/startRendering. If the zIndex is missing is it assumed to be 1
-//
-// Renderables:
-//
-// The objects passed to the add() method are known as renderables, they are normal objects or
-// classes, the only thing they are required to have is a render() method. This method paints the
-// object onto the canvas. Although this is the only required method, there are a number of optional
-// methods that may be useful.
-//
-//  - zIndex (int) - the z-index of the object that determines the order they are rendered in. Lower z-indexes
-//		are rendered first. If no z-index is provided then it is assumed to be zero.
-//  - renderingFinished (bool) - when set to true, the object will be removed from the render queue on the next
-//		frame. It has to be manually readded in order to get it to display again
-//
+type Point = {x:number, y:number}
+type Rect = {x:number, y:number, width:number, height:number}
+
+export interface IRenderable {
+    viewport:StaticViewport;
+	renderingFinished:boolean;
+	positionType: "world" | "static";
+    render(viewport:StaticViewport, sinceLastFrame:number):void;
+}
+
+export class ViewportObject implements IRenderable {
+    x:number;
+	y:number;
+	width:?number;
+	height:?number;
+    viewport:StaticViewport;
+	renderingFinished:boolean;
+	positionType: "world" | "static";
+    constructor(options:{x:number,y:number}) {
+        this.x = options.x;
+		this.y = options.y;
+		this.positionType = "static"
+    }
+
+    render(viewport:StaticViewport, sinceLastFrame:number) {
+        this.update(sinceLastFrame);
+    }
+
+    update(sinceLastFrame:number) {
+    }
+}
+
 export class StaticViewport {
     element:?HTMLCanvasElement;
     options:Object;
@@ -241,57 +224,181 @@ export class StaticViewport {
 	}
 }
 
-export interface IRenderable {
-    viewport:StaticViewport;
-    renderingFinished:boolean;
-    render(viewport:StaticViewport, sinceLastFrame:number):void;
-}
-
-export class ViewportObject implements IRenderable {
-    x:number;
-    y:number;
-    viewport:StaticViewport;
-    renderingFinished:boolean;
-    constructor(options:{x:number,y:number}) {
-        this.x = options.x;
-        this.y = options.y;
-    }
-
-    render(viewport:StaticViewport, sinceLastFrame:number) {
-        this.update(sinceLastFrame);
-    }
-
-    update(sinceLastFrame:number) {
-    }
-}
 
 
-type BoxOptions = {x:number,y:number,size:number};
+class WorldViewport extends StaticViewport {
+	origin:Point;
+	staticQueue:IRenderable[];
+	worldQueue:IRenderable[];
 
-class RotatingBox extends ViewportObject {
-    options:BoxOptions;
-    renderingFinished:boolean;
-    viewport:StaticViewport;
-    angle:number;
-    constructor(options:BoxOptions) {
-        super(options);
-        this.options = options || {};
-        this.renderingFinished = false;
-        this.angle = 0;
-    }
+	constructor(element, options) {
+		super(element, options);
+		this.origin = this.options.origin || {x:0, y:0};
 
-    render(viewport:StaticViewport, sinceLastFrame:number) {
-        super.render(viewport, sinceLastFrame);
+		this.staticQueue = [];
+		this.worldQueue = [];
 
-        viewport.context.fillStyle = "#ff8888";
-        viewport.context.save();
-        viewport.context.translate(this.options.x, this.options.y);
-        viewport.context.rotate(this.angle);
-        viewport.context.fillRect(-this.options.size/2, -this.options.size/2, this.options.size, this.options.size);
-        viewport.context.restore();
-    }
+		this._width = 0.0;
+		this._height = 0.0;
+		this._scale = 1.0;
+	}
 
-    update(sinceLastFrame) {
-        this.angle += (sinceLastFrame / 1000) * Math.PI * 0.25;
-    }
+	setScale(n) {
+		if(n != null) {
+			this.context.scale(n, n);
+			this._scale = n;
+			this.updateDimensions();
+		}
+	}
+
+	addEvent(name, fn) {
+		if(typeof fn != 'function')
+			return;
+
+		if(name == 'mousemove') {
+			this.options.onMouseMove = fn;
+		}
+	}
+
+	updateQueues(renderQueue:IRenderable[]) {
+		this.staticQueue = renderQueue.filter(o => o.positionType != 'world');
+		this.worldQueue  = renderQueue.filter(o => o.positionType == 'world');
+	}
+
+	renderObjects(renderQueue, sinceLastFrame) {
+		if(this.renderQueueChanged === true) {
+			this.updateQueues(renderQueue);
+		}
+
+		this.updateDimensions();
+
+		this.context.save();
+		this.context.translate(-this.origin.x, -this.origin.y);
+		
+		for(var i=0; i < this.worldQueue.length; i++) {
+			this.renderObject(this.worldQueue[i], sinceLastFrame);
+		}
+
+		this.context.restore();
+
+		// this means that static objects will always render on top of the world ones
+		// it would be difficult to fix this, but since this is mostly what we want anyway
+		// lets just ignore this problem
+		super.renderObjects(this.staticQueue, sinceLastFrame);
+
+	}
+
+	// calls the render method the object in the right way. If the renderable
+	// has the position type set to world, then we check if the object is visible
+	// before rendering, as well as calling any other aux functions.
+	//
+	// Statically positioned objects are rendered the same as before
+	renderObject(o:IRenderable, sinceLastFrame:number) {
+		if(o.positionType == 'world' && o instanceof ViewportObject) {
+			if(this.objectVisible(o) && o.render) {
+				o.render(this, sinceLastFrame);
+			}
+		} else {
+			super.renderObject(o, sinceLastFrame);
+		}
+	}
+
+	// this sets the canvas (0,0) (in screen coords) to the x,y arguments
+	// in world coordinates. Put another way, the x,y provided as arguments
+	// will be the world coordinates of the top left corner of the canvas.
+	setOrigin(x, y) {
+		this.origin = {x: x, y: y};
+	}
+
+	getOrigin() {
+		return this.origin;
+	}
+
+	// this is the same as setOrigin, but it uses the center of the canvas as the reference
+	// instead of the top-left. x and y will be the world coordinates of the center of the 
+	// canvas
+	setCenter(x, y) {
+		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
+	}
+
+	getCenter() {
+		return {
+			x: this.origin.x + Math.round(this._width / 2),
+			y: this.origin.y + Math.round(this._height / 2)
+		};
+	}
+
+	// returns the bounds of the viewport in world coordinates
+	// this is mainly used to decide if a given object is visible on the
+	// canvas and should be rendered
+	getBounds() {
+		return {
+			x: this.origin.x,
+			y: this.origin.y,
+			width: this._width,
+			height: this._height,
+			top: this.origin.y,
+			left: this.origin.x,
+			bottom: this.origin.y + this._height,
+			right: this.origin.x + this._width
+		};
+	}
+
+	//
+	// assumes the object being passed has at least a 'getBounds' method, and if not
+	// at least an x or y property so it can be evalulated as a point
+	//
+	// this will default to returning TRUE
+	//
+	// this gets called for every objet on every frame, so we should work on making it more
+	// efficient...
+	//
+	objectVisible(o:ViewportObject) {
+		if(o.x == null || o.y == null)
+			return true;
+
+		if(this.pointVisible(o.x, o.y))
+			return true;
+
+		if((o.x - this.origin.x > this._width * 2) || (o.x - this.origin.x < -this._width))
+			return false;
+
+		if((o.y - this.origin.y > this._height * 2) || (o.y - this.origin.y < -this._height))
+			return false;
+
+		var bounds:Rect;
+		if(!o.getBounds) {
+			if(o.x !== undefined && o.y !== undefined && o.width !== undefined && o.height !== undefined) {
+				bounds = {
+					x: o.x,
+					y: o.y,
+					width: o.width || 0,
+					height: o.height || 0
+				};
+			} else if(o.x !== undefined  && o.y !== undefined) {
+				return this.pointVisible(o.x, o.y);
+			} else {
+				return true;
+			}
+		} else {
+			bounds = (o:any).getBounds();
+		}
+
+		if(!bounds.width || !bounds.height) {
+			// either object has no width and height, or they are
+			// undefined. Either way just evaluate the visibility as if it was a point
+			return this.pointVisible(bounds.x, bounds.y);
+		} else {
+			// we need to check the visibility of each corner of the bounds, if any is visible
+			// then we say that the object is
+			return this.pointVisible(bounds.x, bounds.y) ||
+				this.pointVisible(bounds.x + bounds.width, bounds.y) ||
+				this.pointVisible(bounds.x, bounds.y + bounds.height) ||
+				this.pointVisible(bounds.x + bounds.width, bounds.y + bounds.height);
+		}
+	}
+
+	pointVisible(x:number, y:number) {
+		return (x >= this.origin.x && x < this.origin.x + this._width) && (y >= this.origin.y && y < this.origin.y + this._height);
+	}
 }

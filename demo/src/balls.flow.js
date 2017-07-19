@@ -96,5 +96,3 @@ class BouncingBall extends Viewport.ViewportObject {
         }
     }
 }
-
-//window.addEventListener('load', () => window._app = new App());
