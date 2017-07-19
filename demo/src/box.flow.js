@@ -1,5 +1,5 @@
 // @flow
-import {ViewportObject, StaticViewport} from '../../src/viewport.flow'
+import {ViewportObject, Viewport} from '../../src/viewport.flow'
 
 export type BoxOptions = {x:number,y:number,size:number};
 
@@ -11,12 +11,12 @@ export class RotatingBox extends ViewportObject {
         this.options = options || {};
         this.renderingFinished = false;
         this.angle = 0;
-        
+
         this.height = this.options.size;
         this.width = this.options.size;
     }
 
-    render(viewport:StaticViewport, sinceLastFrame:number) {
+    render(viewport:Viewport, sinceLastFrame:number) {
         super.render(viewport, sinceLastFrame);
 
         viewport.context.fillStyle = "#ff8888";

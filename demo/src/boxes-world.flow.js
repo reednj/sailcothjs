@@ -1,6 +1,6 @@
 // @flow
 
-import { Renderable, WorldViewport, StaticViewport } from '../../src/viewport.flow'
+import { Renderable, WorldViewport, Viewport } from '../../src/viewport.flow'
 import * as Box from './box.flow'
 
 // just ignore jquery errors
@@ -59,7 +59,7 @@ class GridLines extends Renderable {
         this.zIndex = 10;
     }
 
-    render(viewport:StaticViewport, sinceLastFrame:number) {
+    render(viewport:Viewport, sinceLastFrame:number) {
         if(viewport instanceof WorldViewport) {
             let bounds = viewport.bounds;
             viewport.context.strokeStyle = "#ddd"

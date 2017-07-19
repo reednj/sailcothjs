@@ -20,7 +20,7 @@
         class App {
             constructor() {
                 var element = document.getElementById('canvas')
-                var viewport = new StaticViewport(element, {});
+                var viewport = new Viewport(element, {});
                 var p = viewport.getCenter();
                 
                 viewport.add(new RotatingBox({ x:p.x, y:p.y, size:96 }));

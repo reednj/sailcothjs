@@ -4,14 +4,14 @@ type Point = {x:number, y:number}
 type Rect = {x:number, y:number, width:number, height:number}
 
 export interface IRenderable {
-    viewport:StaticViewport;
+    viewport:Viewport;
 	renderingFinished:boolean;
 	positionType: "world" | "static";
-    render(viewport:StaticViewport, sinceLastFrame:number):void;
+    render(viewport:Viewport, sinceLastFrame:number):void;
 }
 
 export class Renderable {
-	viewport:StaticViewport;
+	viewport:Viewport;
 	renderingFinished:boolean;
 	positionType: "world" | "static";
 	zIndex:number;
@@ -21,7 +21,7 @@ export class Renderable {
 		this.zIndex = 100;
 	}
 
-	render(viewport:StaticViewport, sinceLastFrame:number) {
+	render(viewport:Viewport, sinceLastFrame:number) {
 	}
 }
 
@@ -36,7 +36,7 @@ export class ViewportObject extends Renderable {
 		this.y = options.y;
     }
 
-    render(viewport:StaticViewport, sinceLastFrame:number) {
+    render(viewport:Viewport, sinceLastFrame:number) {
         this.update(sinceLastFrame);
     }
 
@@ -44,7 +44,7 @@ export class ViewportObject extends Renderable {
     }
 }
 
-export class StaticViewport {
+export class Viewport {
     element:?HTMLCanvasElement;
     options:Object;
     tick:number;
@@ -236,7 +236,7 @@ export class StaticViewport {
 	}
 }
 
-export class WorldViewport extends StaticViewport {
+export class WorldViewport extends Viewport {
 	origin:Point;
 	staticQueue:IRenderable[];
 	worldQueue:IRenderable[];

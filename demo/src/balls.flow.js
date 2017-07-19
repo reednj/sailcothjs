@@ -8,7 +8,7 @@ export class App {
     constructor() {
         
         var element = document.getElementById('canvas')
-        this.viewport = new Viewport.StaticViewport(element, {});
+        this.viewport = new Viewport.Viewport(element, {});
         this.center = this.viewport.getCenter();
         this.viewport.start();
         this.balls = this.balls || [];
@@ -54,7 +54,7 @@ class BouncingBall extends Viewport.ViewportObject {
          return (to - from) * Math.random() + from;
     }
 
-    render(viewport:Viewport.StaticViewport, sinceLastFrame:number) {
+    render(viewport:Viewport.Viewport, sinceLastFrame:number) {
         super.render(viewport, sinceLastFrame);
         viewport.context.fillStyle = this.color;
         viewport.context.beginPath();
