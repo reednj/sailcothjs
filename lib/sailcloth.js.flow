@@ -95,11 +95,18 @@ export class Viewport {
 
 		this.canvas = this.element;
 		this.context = this.canvas.getContext('2d');
-		this.updateDimensions();
+		
+		this.setScale(PIXEL_RATIO);
 
 		if(this.sizingElement) {
 			window.addEventListener('resize', () => this.autosize());
 			this.autosize();
+		}
+	}
+	setScale(n:number) {
+		if(n != null) {
+			this._scale = n;
+			this.updateDimensions();
 		}
 	}
 
@@ -119,11 +126,7 @@ export class Viewport {
 				y: this.sizingElement.clientHeight || 0
 			}
 
-
-
 			this.setSize(parentSize.x, parentSize.y);
-			//this.canvas.width = 
-			//this.canvas.height = parentSize.y;
 
 			this.renderQueue.forEach(o => {
 				if(typeof o.onResize == 'function') {
@@ -136,6 +139,8 @@ export class Viewport {
 	}
 
 	setSize(width:number, height:number) {
+		console.log(this._scale);
+
 		if(this._scale > 1.0) {
 			this.canvas.width = Math.floor(width * this._scale);
 			this.canvas.height = Math.floor(height * this._scale);
@@ -278,28 +283,13 @@ export class WorldViewport extends Viewport {
 	origin:Point;
 	staticQueue:IRenderable[];
 	worldQueue:IRenderable[];
-
 	_center:?Point;
 
 	constructor(element:HTMLCanvasElement, options:Object = {}) {
 		super(element, options);
 		this.origin = this.options.origin || {x:0, y:0};
-
 		this.staticQueue = [];
 		this.worldQueue = [];
-		this._width = 0.0;
-		this._height = 0.0;
-
-		this.setScale(PIXEL_RATIO);
-		this.updateDimensions();
-
-	}
-
-	setScale(n:number) {
-		if(n != null) {
-			this._scale = n;
-			this.updateDimensions();
-		}
 	}
 
 	updateQueues(renderQueue:IRenderable[]) {
