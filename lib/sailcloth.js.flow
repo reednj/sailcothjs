@@ -58,6 +58,7 @@ export class Viewport {
     _width:number;
     _height:number;
 	_scale:number;
+	_bounds:?Rect;
 	
 	// if this is set to an element, the canvas will try to fill it
 	// as much as possible when the window is resized
@@ -93,6 +94,7 @@ export class Viewport {
 		// frame
 		this._width = this.canvas.width / (this._scale || 1.0);
 		this._height = this.canvas.height / (this._scale || 1.0);
+		this._bounds = null;
 	}
 
 	autosize() {
@@ -119,7 +121,7 @@ export class Viewport {
 		return this.refresh(true);
 	}
 
-	refresh(autoRedraw:boolean) {
+	refresh(autoRedraw:boolean = false) {
 		if(this.waitingForFrame === false && this.options.autoRedraw === false) {
 			requestAnimationFrame(this.redraw.bind(this));
 
@@ -229,12 +231,26 @@ export class Viewport {
 	}
 
 	// gets the center of the canvas in static co-ords
-	getCenter() {
+	get center():Point {
 		return {
 			x: Math.round(this._width / 2),
 			y: Math.round(this._height / 2)
 		};
 	}
+
+	get bounds():Rect {
+		return this._bounds = this._bounds || {
+			x: 0,
+			y: 0,
+			width: this._width,
+			height: this._height,
+			top: 0,
+			left: 0,
+			bottom: this._height,
+			right: this._width
+		};
+	}
+
 }
 
 export class WorldViewport extends Viewport {
@@ -243,7 +259,6 @@ export class WorldViewport extends Viewport {
 	worldQueue:IRenderable[];
 
 	_center:?Point;
-	_bounds:?Rect;
 
 	constructor(element:HTMLCanvasElement, options:Object = {}) {
 		super(element, options);
