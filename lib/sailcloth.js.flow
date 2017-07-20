@@ -1,7 +1,6 @@
 // @flow
-
-type Point = {x:number, y:number}
-type Rect = {x:number, y:number, width:number, height:number}
+import { Rect  } from './types'
+import type { Point, Size, Bounds } from './types'
 
 export interface IRenderable {
     viewport:Viewport;
@@ -239,16 +238,7 @@ export class Viewport {
 	}
 
 	get bounds():Rect {
-		return this._bounds = this._bounds || {
-			x: 0,
-			y: 0,
-			width: this._width,
-			height: this._height,
-			top: 0,
-			left: 0,
-			bottom: this._height,
-			right: this._width
-		};
+		return this._bounds = this._bounds || new Rect(0, 0, this._width, this._height);
 	}
 
 }
@@ -355,16 +345,7 @@ export class WorldViewport extends Viewport {
 	// this is mainly used to decide if a given object is visible on the
 	// canvas and should be rendered
 	get bounds():Object {
-		return this._bounds = this._bounds || {
-			x: this.origin.x,
-			y: this.origin.y,
-			width: this._width,
-			height: this._height,
-			top: this.origin.y,
-			left: this.origin.x,
-			bottom: this.origin.y + this._height,
-			right: this.origin.x + this._width
-		};
+		return this._bounds = this._bounds || new Rect(0, 0, this._width, this._height);
 	}
 
 	//
@@ -389,16 +370,10 @@ export class WorldViewport extends Viewport {
 		if((o.y - this.origin.y > this._height * 2) || (o.y - this.origin.y < -this._height))
 			return false;
 
-		var bounds:Rect;
+		let bounds:?Bounds;
+
 		if(!o.getBounds) {
-			if(o.x !== undefined && o.y !== undefined && o.width !== undefined && o.height !== undefined) {
-				bounds = {
-					x: o.x,
-					y: o.y,
-					width: o.width || 0,
-					height: o.height || 0
-				};
-			} else if(o.x !== undefined  && o.y !== undefined) {
+			if(o.x !== undefined  && o.y !== undefined) {
 				return this.pointVisible(o.x, o.y);
 			} else {
 				return true;
