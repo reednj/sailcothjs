@@ -135,6 +135,7 @@ export class Viewport {
 			});
 
 			this.updateDimensions();
+			this.refresh();
 		}
 	}
 
