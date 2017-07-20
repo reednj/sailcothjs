@@ -1,6 +1,6 @@
 // @flow
 
-import { Renderable, WorldViewport, Viewport } from './sailcloth'
+import { Renderable, WorldViewport, Viewport } from '../lib/sailcloth.js'
 import * as Box from './box'
 
 // just ignore jquery errors
@@ -12,7 +12,7 @@ export class App {
         let element = document.getElementById('canvas')
         let move:{x:number,y:number} = {x:0,y:0}
 
-        // $FlowFixMe
+        
         this.viewport = new WorldViewport(element, {
             onRedraw: () => { 
                 let p = this.viewport.center;
