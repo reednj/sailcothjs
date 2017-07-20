@@ -2,6 +2,22 @@
 import { Rect  } from './types.js'
 import type { Point, Size, Bounds } from './types.js'
 
+// this tells us the display density, if it is retina etc. This is important, otherwise
+// things end up loking blurry - we need to scale when rendering to make things look
+// nice and sharp. This PIXEL_RATIO will tell us the amount to scale by
+var PIXEL_RATIO = (function () {
+	var ctx = document.createElement("canvas").getContext("2d");
+	var dpr = window.devicePixelRatio || 1;
+	var bsr = ctx.webkitBackingStorePixelRatio ||
+		ctx.mozBackingStorePixelRatio ||
+		ctx.msBackingStorePixelRatio ||
+		ctx.oBackingStorePixelRatio ||
+		ctx.backingStorePixelRatio || 1;
+
+	//$FlowFixMe
+	return dpr / bsr;
+})();
+
 export interface IRenderable {
     viewport:Viewport;
 	renderingFinished:boolean;
@@ -222,7 +238,7 @@ export class Viewport {
 	}
 
 	clear() {
-		this.context.clearRect(0, 0, this._width, this._height);
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
 	getObjectCount() {
@@ -256,16 +272,16 @@ export class WorldViewport extends Viewport {
 
 		this.staticQueue = [];
 		this.worldQueue = [];
-
 		this._width = 0.0;
 		this._height = 0.0;
-		this._scale = 1.0;
+
+		this.setScale(PIXEL_RATIO);
 		this.updateDimensions();
+
 	}
 
 	setScale(n:number) {
 		if(n != null) {
-			this.context.scale(n, n);
 			this._scale = n;
 			this.updateDimensions();
 		}
@@ -284,6 +300,7 @@ export class WorldViewport extends Viewport {
 		this.updateDimensions();
 
 		this.context.save();
+		this.context.scale(this._scale, this._scale);
 		this.context.translate(-this.origin.x, -this.origin.y);
 		
 		for(var i=0; i < this.worldQueue.length; i++) {

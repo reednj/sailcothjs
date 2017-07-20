@@ -1,6 +1,6 @@
 // @flow
 
-import { Renderable, WorldViewport, Viewport } from '../../src/sailcloth'
+import { Renderable, WorldViewport, Viewport } from './sailcloth'
 import * as Box from './box'
 
 // just ignore jquery errors
