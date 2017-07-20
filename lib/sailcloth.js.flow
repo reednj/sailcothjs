@@ -119,8 +119,11 @@ export class Viewport {
 				y: this.sizingElement.clientHeight || 0
 			}
 
-			this.canvas.width = parentSize.x;
-			this.canvas.height = parentSize.y;
+
+
+			this.setSize(parentSize.x, parentSize.y);
+			//this.canvas.width = 
+			//this.canvas.height = parentSize.y;
 
 			this.renderQueue.forEach(o => {
 				if(typeof o.onResize == 'function') {
@@ -129,6 +132,18 @@ export class Viewport {
 			});
 
 			this.updateDimensions();
+		}
+	}
+
+	setSize(width:number, height:number) {
+		if(this._scale > 1.0) {
+			this.canvas.width = Math.floor(width * this._scale);
+			this.canvas.height = Math.floor(height * this._scale);
+			this.canvas.style.width = width + 'px';
+			this.canvas.style.height = height + 'px';
+		} else {
+			this.canvas.width = width;
+			this.canvas.height = height;
 		}
 	}
 
