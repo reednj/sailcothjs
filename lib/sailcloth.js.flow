@@ -139,8 +139,6 @@ export class Viewport {
 	}
 
 	setSize(width:number, height:number) {
-		console.log(this._scale);
-
 		if(this._scale > 1.0) {
 			this.canvas.width = Math.floor(width * this._scale);
 			this.canvas.height = Math.floor(height * this._scale);
