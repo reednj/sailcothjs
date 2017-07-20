@@ -67,7 +67,7 @@ class GridLines extends Renderable {
 
     render(viewport:Viewport, sinceLastFrame:number) {
         if(viewport instanceof WorldViewport) {
-            let bounds = viewport.bounds;
+            let bounds = viewport.rect.bounds;
             viewport.context.strokeStyle = "#ddd"
             viewport.context.lineWidth - 1.0;
 
