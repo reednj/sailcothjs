@@ -1,6 +1,6 @@
 [ignore]
-lib/
-demo/lib/
+./lib/*
+./demo/lib/
 
 [include]
 

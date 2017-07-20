@@ -1,6 +1,6 @@
 // @flow
-import { Rect  } from './types'
-import type { Point, Size, Bounds } from './types'
+import { Rect  } from './types.js'
+import type { Point, Size, Bounds } from './types.js'
 
 export interface IRenderable {
     viewport:Viewport;
@@ -57,7 +57,7 @@ export class Viewport {
     _width:number;
     _height:number;
 	_scale:number;
-	_bounds:?Rect;
+	_rect:?Rect;
 	
 	// if this is set to an element, the canvas will try to fill it
 	// as much as possible when the window is resized
@@ -93,7 +93,7 @@ export class Viewport {
 		// frame
 		this._width = this.canvas.width / (this._scale || 1.0);
 		this._height = this.canvas.height / (this._scale || 1.0);
-		this._bounds = null;
+		this._rect = null;
 	}
 
 	autosize() {
@@ -237,8 +237,8 @@ export class Viewport {
 		};
 	}
 
-	get bounds():Rect {
-		return this._bounds = this._bounds || new Rect(0, 0, this._width, this._height);
+	get rect():Rect {
+		return this._rect = this._rect || new Rect(0, 0, this._width, this._height);
 	}
 
 }
@@ -330,7 +330,7 @@ export class WorldViewport extends Viewport {
 	// canvas
 	setCenter(x:number, y:number) {
 		this._center = null;
-		this._bounds = null;
+		this._rect = null;
 		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
 	}
 
@@ -344,8 +344,8 @@ export class WorldViewport extends Viewport {
 	// returns the bounds of the viewport in world coordinates
 	// this is mainly used to decide if a given object is visible on the
 	// canvas and should be rendered
-	get bounds():Object {
-		return this._bounds = this._bounds || new Rect(0, 0, this._width, this._height);
+	get rect():Object {
+		return this._rect = this._rect || new Rect(this.origin.x, this.origin.y, this._width, this._height);
 	}
 
 	//
