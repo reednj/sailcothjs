@@ -155,14 +155,18 @@ export class Viewport {
 		return this.refresh(true);
 	}
 
+	// requests an animation frame from the canvas to redraw all objects
+	//
+	// This doesn't actually redraw the canvas directly, so it can safely be called multiple
+	// times without doing uneeded work.
+	//
 	refresh(autoRedraw:boolean = false) {
 		if(this.waitingForFrame === false && this.options.autoRedraw === false) {
-			requestAnimationFrame(this.redraw.bind(this));
-
 			// the waiting for frame flag makes sure that the frame will only be redrawn once
 			// if mulitple requests are made on the same canvas before it gets a chance to draw
 			this.waitingForFrame = true;
-
+			requestAnimationFrame(this.redraw.bind(this));
+			
 			if(autoRedraw === true) {
 				this.options.autoRedraw = autoRedraw;
 			}
