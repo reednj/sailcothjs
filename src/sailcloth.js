@@ -68,7 +68,8 @@ export class Viewport {
     renderQueueChanged:boolean;
     renderQueue:Object[];
     canvas:HTMLCanvasElement;
-    context:CanvasRenderingContext2D;
+	context:CanvasRenderingContext2D;
+	origin:Point;
     
     _width:number;
     _height:number;
@@ -279,11 +280,28 @@ export class Viewport {
 	get rect():Rect {
 		return this._rect = this._rect || new Rect(0, 0, this._width, this._height);
 	}
+	
+	// convert coordinates inside the canvas element to viewport coordinates
+	canvasToViewport(sx:number, sy:number) {
+		return {
+			x: this.origin.x + sx,
+			y: this.origin.y + sy
+		};
+	}
+
+	// convert coordinates inside the window containing the convas to 
+	// viewport coordinates
+	windowToViewport(x:number, y:number) {
+		return this.canvasToViewport(
+			x - this.canvas.offsetLeft,
+			y - this.canvas.offsetTop
+		);
+	}
+
 
 }
 
 export class WorldViewport extends Viewport {
-	origin:Point;
 	staticQueue:IRenderable[];
 	worldQueue:IRenderable[];
 	_center:?Point;
