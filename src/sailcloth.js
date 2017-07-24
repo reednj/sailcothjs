@@ -192,7 +192,12 @@ export class Viewport {
 
 		// after the redraw event there might be some objects we dont want to render
 		// anymore. So we get a list of them, and remove them from the render queue
+		let beforeLen = this.renderQueue.length;
 		this.renderQueue = this.renderQueue.filter(o => !o.renderingFinished);
+		
+		if(beforeLen != this.renderQueue.length) {
+			this.renderQueueChanged = true;
+		}
 
 		// we want to calulate the time since the last frame so that things can be animated consistantly
 		var currentTime = new Date();
