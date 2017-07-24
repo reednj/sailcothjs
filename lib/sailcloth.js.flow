@@ -68,7 +68,8 @@ export class Viewport {
     renderQueueChanged:boolean;
     renderQueue:Object[];
     canvas:HTMLCanvasElement;
-    context:CanvasRenderingContext2D;
+	context:CanvasRenderingContext2D;
+	origin:Point;
     
     _width:number;
     _height:number;
@@ -155,14 +156,18 @@ export class Viewport {
 		return this.refresh(true);
 	}
 
+	// requests an animation frame from the canvas to redraw all objects
+	//
+	// This doesn't actually redraw the canvas directly, so it can safely be called multiple
+	// times without doing uneeded work.
+	//
 	refresh(autoRedraw:boolean = false) {
 		if(this.waitingForFrame === false && this.options.autoRedraw === false) {
-			requestAnimationFrame(this.redraw.bind(this));
-
 			// the waiting for frame flag makes sure that the frame will only be redrawn once
 			// if mulitple requests are made on the same canvas before it gets a chance to draw
 			this.waitingForFrame = true;
-
+			requestAnimationFrame(this.redraw.bind(this));
+			
 			if(autoRedraw === true) {
 				this.options.autoRedraw = autoRedraw;
 			}
@@ -275,11 +280,28 @@ export class Viewport {
 	get rect():Rect {
 		return this._rect = this._rect || new Rect(0, 0, this._width, this._height);
 	}
+	
+	// convert coordinates inside the canvas element to viewport coordinates
+	canvasToViewport(sx:number, sy:number) {
+		return {
+			x: this.origin.x + sx,
+			y: this.origin.y + sy
+		};
+	}
+
+	// convert coordinates inside the window containing the convas to 
+	// viewport coordinates
+	windowToViewport(x:number, y:number) {
+		return this.canvasToViewport(
+			x - this.canvas.offsetLeft,
+			y - this.canvas.offsetTop
+		);
+	}
+
 
 }
 
 export class WorldViewport extends Viewport {
-	origin:Point;
 	staticQueue:IRenderable[];
 	worldQueue:IRenderable[];
 	_center:?Point;
