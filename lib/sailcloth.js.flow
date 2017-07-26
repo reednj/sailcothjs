@@ -1,6 +1,6 @@
 // @flow
-import { Rect  } from './types.js'
-import type { Point, Size, Bounds } from './types.js'
+import { Rect  } from './types'
+import type { Point, Size, Bounds } from './types'
 
 // this tells us the display density, if it is retina etc. This is important, otherwise
 // things end up loking blurry - we need to scale when rendering to make things look
