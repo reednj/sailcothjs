@@ -127,7 +127,7 @@ export class Viewport {
 				y: this.sizingElement.clientHeight || 0
 			}
 
-			this.setSize(parentSize.x, parentSize.y);
+			this.setCanvasSize(parentSize.x, parentSize.y);
 
 			this.renderQueue.forEach(o => {
 				if(typeof o.onResize == 'function') {
@@ -140,7 +140,7 @@ export class Viewport {
 		}
 	}
 
-	setSize(width:number, height:number) {
+	setCanvasSize(width:number, height:number) {
 		if(this._scale > 1.0) {
 			this.canvas.width = Math.floor(width * this._scale);
 			this.canvas.height = Math.floor(height * this._scale);
