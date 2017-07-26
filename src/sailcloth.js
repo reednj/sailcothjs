@@ -214,9 +214,14 @@ export class Viewport {
 	}
 
 	renderObjects(renderQueue:IRenderable[], sinceLastFrame:number) {
+		this.context.save();
+		this.context.scale(this._scale, this._scale);
+
 		renderQueue.forEach(function(o) {
 			this.renderObject(o, sinceLastFrame);
 		}.bind(this));
+
+		this.context.restore();
 	}
 
 	renderObject(o:IRenderable, sinceLastFrame:number) {
