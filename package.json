@@ -4,6 +4,7 @@
   "main": "lib/sailcloth.js",
   "author": "Nathan Reed <reednj@gmail.com>",
   "license": "MIT",
+  "repository": "https://github.com/reednj/sailcothjs",
   "scripts": {
     "build": "yarn run build:clean && yarn run build:lib && yarn run build:flow",
     "build:lib": "babel src -d lib --source-maps && babel src demo/src -d demo/lib  --source-maps",
