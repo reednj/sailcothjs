@@ -1,5 +1,6 @@
 // @flow
 import * as XY from './types'
+export { XY }
 
 // this tells us the display density, if it is retina etc. This is important, otherwise
 // things end up loking blurry - we need to scale when rendering to make things look
