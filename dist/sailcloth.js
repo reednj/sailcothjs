@@ -1,3 +1,51 @@
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sailcloth = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+class Rect {
+
+	constructor(top, left, width, height) {
+		this._x = top;
+		this._y = left;
+		this._width = width;
+		this._height = height;
+	}
+
+	get bounds() {
+		return this._bounds = this._bounds || {
+			top: this._y,
+			left: this._x,
+			bottom: this._y + this._height,
+			right: this._x + this._width
+		};
+	}
+
+	get center() {
+		return this._center = this._center || {
+			x: this._x + this._width / 2,
+			y: this._y + this._height / 2
+		};
+	}
+
+	get origin() {
+		return this._origin = this._origin || {
+			x: this._x,
+			y: this._y
+		};
+	}
+
+	get size() {
+		return this._size = this._size || {
+			width: this._width,
+			height: this._height
+		};
+	}
+}
+exports.Rect = Rect;
+
+},{}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -416,4 +464,6 @@ class WorldViewport extends Viewport {
 	}
 }
 exports.WorldViewport = WorldViewport;
-//# sourceMappingURL=sailcloth.js.map
+
+},{"./types":1}]},{},[2])(2)
+});
