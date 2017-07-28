@@ -51,7 +51,7 @@ exports.Rect = Rect;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.WorldViewport = exports.Viewport = exports.ViewportObject = exports.Renderable = undefined;
+exports.WorldViewport = exports.Viewport = exports.ViewportObject = exports.Renderable = exports.XY = undefined;
 
 var _types = require("./types");
 
@@ -59,9 +59,12 @@ var XY = _interopRequireWildcard(_types);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+exports.XY = XY;
+
 // this tells us the display density, if it is retina etc. This is important, otherwise
 // things end up loking blurry - we need to scale when rendering to make things look
 // nice and sharp. This PIXEL_RATIO will tell us the amount to scale by
+
 var PIXEL_RATIO = function () {
 	var ctx = document.createElement("canvas").getContext("2d");
 	var dpr = window.devicePixelRatio || 1;
@@ -70,6 +73,7 @@ var PIXEL_RATIO = function () {
 	//$FlowFixMe
 	return dpr / bsr;
 }();
+
 class Renderable {
 	constructor() {
 		this.renderingFinished = false;
