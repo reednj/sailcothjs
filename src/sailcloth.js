@@ -1,6 +1,5 @@
 // @flow
-import { Rect  } from './types'
-import type { Point, Size, Bounds } from './types'
+import * as XY from './types'
 
 // this tells us the display density, if it is retina etc. This is important, otherwise
 // things end up loking blurry - we need to scale when rendering to make things look
@@ -69,12 +68,12 @@ export class Viewport {
     renderQueue:Object[];
     canvas:HTMLCanvasElement;
 	context:CanvasRenderingContext2D;
-	origin:Point;
+	origin:XY.Point;
     
     _width:number;
     _height:number;
 	_scale:number;
-	_rect:?Rect;
+	_rect:?XY.Rect;
 	
 	// if this is set to an element, the canvas will try to fill it
 	// as much as possible when the window is resized
@@ -280,15 +279,15 @@ export class Viewport {
 	}
 
 	// gets the center of the canvas in static co-ords
-	get center():Point {
+	get center():XY.Point {
 		return {
 			x: Math.round(this._width / 2),
 			y: Math.round(this._height / 2)
 		};
 	}
 
-	get rect():Rect {
-		return this._rect = this._rect || new Rect(0, 0, this._width, this._height);
+	get rect():XY.Rect {
+		return this._rect = this._rect || new XY.Rect(0, 0, this._width, this._height);
 	}
 	
 	// convert coordinates inside the canvas element to viewport coordinates
@@ -314,7 +313,7 @@ export class Viewport {
 export class WorldViewport extends Viewport {
 	staticQueue:IRenderable[];
 	worldQueue:IRenderable[];
-	_center:?Point;
+	_center:?XY.Point;
 
 	constructor(element:HTMLCanvasElement, options:Object = {}) {
 		super(element, options);
@@ -374,7 +373,7 @@ export class WorldViewport extends Viewport {
 		this.origin = {x: x, y: y};
 	}
 
-	getOrigin():Point {
+	getOrigin():XY.Point {
 		return this.origin;
 	}
 
@@ -387,7 +386,7 @@ export class WorldViewport extends Viewport {
 		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
 	}
 
-	get center():Point {
+	get center():XY.Point {
 		return this._center = this._center || {
 			x: this.origin.x + Math.round(this._width / 2),
 			y: this.origin.y + Math.round(this._height / 2)
@@ -398,7 +397,7 @@ export class WorldViewport extends Viewport {
 	// this is mainly used to decide if a given object is visible on the
 	// canvas and should be rendered
 	get rect():Object {
-		return this._rect = this._rect || new Rect(this.origin.x, this.origin.y, this._width, this._height);
+		return this._rect = this._rect || new XY.Rect(this.origin.x, this.origin.y, this._width, this._height);
 	}
 
 	//
@@ -423,7 +422,7 @@ export class WorldViewport extends Viewport {
 		if((o.y - this.origin.y > this._height * 2) || (o.y - this.origin.y < -this._height))
 			return false;
 
-		let bounds:?Bounds;
+		let bounds:?XY.Bounds;
 
 		if(!o.getBounds) {
 			if(o.x !== undefined  && o.y !== undefined) {
