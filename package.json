@@ -9,14 +9,14 @@
     "build": "yarn run build:clean && yarn run build:lib && yarn run build:flow",
     "build:lib": "babel src -d lib --source-maps && babel src demo/src -d demo/lib  --source-maps",
     "build:flow": "flow-copy-source -v src lib",
-    "build:browser": "browserify lib/viewport.flow.js -o dist/viewport.js",
+    "build:browser": "browserify . --standalone sailcloth > dist/sailcloth.js",
     "build:watch": "babel src demo/src -d demo/lib --source-maps --watch",
-    "build:clean": "rimraf lib/* && rimraf demo/lib/*"
+    "build:clean": "rimraf lib/* && rimraf demo/lib/* && rimraf dist/*"
   },
   "devDependencies": {
     "babel-plugin-module-alias": "^1.6.0",
     "babel-plugin-module-resolver": "^2.7.1",
-    "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
     "babel-preset-flow": "^6.23.0",
     "flow-copy-source": "^1.2.0",
     "rimraf": "^2.6.1"

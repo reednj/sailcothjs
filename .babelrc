@@ -5,6 +5,6 @@
       { "src": "./lib", "expose": "../../src" },
       { "src": "./lib", "expose": "src" }
     ]],
-    "transform-es2015-modules-amd"
+    "transform-es2015-modules-commonjs"
   ]
 }
