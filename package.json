@@ -1,6 +1,6 @@
 {
   "name": "sailcloth",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "lib/sailcloth.js",
   "author": "Nathan Reed <reednj@gmail.com>",
   "license": "MIT",
