@@ -60,7 +60,7 @@ export class ViewportObject extends Renderable {
 }
 
 export class Viewport {
-    element:?HTMLCanvasElement;
+    element:HTMLElement;
     options:Object;
     tick:number;
     waitingForFrame:boolean;
@@ -79,12 +79,12 @@ export class Viewport {
 	// if this is set to an element, the canvas will try to fill it
 	// as much as possible when the window is resized
 	sizingElement:?HTMLElement;
-	constructor(element:HTMLCanvasElement, options:Object) {
+	constructor(element:HTMLElement, options:Object) {
 		this.element = element;
 		this.sizingElement = options.sizingElement || null;
-        
-        this.options = options || {};
-      	this.options.autoRedraw = false;
+
+		this.options = options || {};
+		this.options.autoRedraw = false;
 		this.options.onRedraw = this.options.onRedraw || function() {};
 
 		this.tick = 0;
@@ -94,7 +94,16 @@ export class Viewport {
 		this.renderQueueChanged = false;
 		this.renderQueue = [];
 
-		this.canvas = this.element;
+		if(this.element instanceof HTMLCanvasElement) {
+			this.canvas = this.element;
+		} else {
+			this.sizingElement = this.sizingElement|| this.element;
+			this.canvas = document.createElement('canvas');
+			this.canvas.width = 300;
+			this.canvas.height = 200;
+			this.element.appendChild(this.canvas);
+		}
+
 		this.context = this.canvas.getContext('2d');
 		
 		this.setScale(PIXEL_RATIO);
@@ -103,6 +112,7 @@ export class Viewport {
 			window.addEventListener('resize', () => this.autosize());
 			this.autosize();
 		}
+		
 	}
 	setScale(n:number) {
 		if(n != null) {
@@ -316,7 +326,7 @@ export class WorldViewport extends Viewport {
 	worldQueue:IRenderable[];
 	_center:?XY.Point;
 
-	constructor(element:HTMLCanvasElement, options:Object = {}) {
+	constructor(element:HTMLElement, options:Object = {}) {
 		super(element, options);
 		this.origin = this.options.origin || {x:0, y:0};
 		this.staticQueue = [];
