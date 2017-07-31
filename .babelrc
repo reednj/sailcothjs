@@ -1,5 +1,5 @@
 {
-  "presets": ["flow"],
+  "presets": ["env", "flow"],
   "plugins": [
     ["module-alias", [
       { "src": "./lib", "expose": "../../src" },
@@ -9,7 +9,7 @@
   ],
   "env":{
     "production": {
-      "presets": ["env", "flow"]
+      "presets": []
     }
   }
 }
