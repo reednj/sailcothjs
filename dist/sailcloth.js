@@ -414,13 +414,6 @@ class WorldViewport extends Viewport {
 		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
 	}
 
-	get center() {
-		return this._center = this._center || {
-			x: this.origin.x + Math.round(this._width / 2),
-			y: this.origin.y + Math.round(this._height / 2)
-		};
-	}
-
 	// returns the bounds of the viewport in world coordinates
 	// this is mainly used to decide if a given object is visible on the
 	// canvas and should be rendered
