@@ -6,5 +6,10 @@
       { "src": "./lib", "expose": "src" }
     ]],
     "transform-es2015-modules-commonjs"
-  ]
+  ],
+  "env":{
+    "production": {
+      "presets": ["env", "flow"]
+    }
+  }
 }
