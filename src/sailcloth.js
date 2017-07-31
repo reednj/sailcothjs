@@ -291,10 +291,7 @@ export class Viewport {
 
 	// gets the center of the canvas in static co-ords
 	get center():XY.Point {
-		return {
-			x: Math.round(this._width / 2),
-			y: Math.round(this._height / 2)
-		};
+		return this.rect.center;
 	}
 
 	get rect():XY.Rect {
