@@ -389,6 +389,10 @@ export class WorldViewport extends Viewport {
 	// instead of the top-left. x and y will be the world coordinates of the center of the 
 	// canvas
 	setCenter(x:number, y:number) {
+		if(typeof x != 'number' || typeof y != 'number') {
+			return;
+		}
+
 		this._center = null;
 		this._rect = null;
 		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
