@@ -499,7 +499,9 @@ var WorldViewport = exports.WorldViewport = function (_Viewport) {
 	}, {
 		key: "setOrigin",
 		value: function setOrigin(x, y) {
-			this.origin = { x: x, y: y };
+			if (this.isValidNumber(x) && this.isValidNumber(y)) {
+				this.origin = { x: x, y: y };
+			}
 		}
 	}, {
 		key: "getOrigin",
@@ -514,10 +516,6 @@ var WorldViewport = exports.WorldViewport = function (_Viewport) {
 	}, {
 		key: "setCenter",
 		value: function setCenter(x, y) {
-			if (typeof x != 'number' || typeof y != 'number') {
-				return;
-			}
-
 			this._center = null;
 			this._rect = null;
 			this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
@@ -575,6 +573,11 @@ var WorldViewport = exports.WorldViewport = function (_Viewport) {
 		key: "pointVisible",
 		value: function pointVisible(x, y) {
 			return x >= this.origin.x && x < this.origin.x + this._width && y >= this.origin.y && y < this.origin.y + this._height;
+		}
+	}, {
+		key: "isValidNumber",
+		value: function isValidNumber(n) {
+			return typeof n == 'number' && !isNaN(n) && isFinite(n);
 		}
 	}, {
 		key: "rect",
