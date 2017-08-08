@@ -378,7 +378,9 @@ export class WorldViewport extends Viewport {
 	// in world coordinates. Put another way, the x,y provided as arguments
 	// will be the world coordinates of the top left corner of the canvas.
 	setOrigin(x:number, y:number) {
-		this.origin = {x: x, y: y};
+		if(this.isValidNumber(x) && this.isValidNumber(y)) {
+			this.origin = {x: x, y: y};
+		}
 	}
 
 	getOrigin():XY.Point {
@@ -389,10 +391,6 @@ export class WorldViewport extends Viewport {
 	// instead of the top-left. x and y will be the world coordinates of the center of the 
 	// canvas
 	setCenter(x:number, y:number) {
-		if(typeof x != 'number' || typeof y != 'number') {
-			return;
-		}
-
 		this._center = null;
 		this._rect = null;
 		this.setOrigin(x - Math.round(this._width / 2), y - Math.round(this._height / 2));
@@ -456,4 +454,9 @@ export class WorldViewport extends Viewport {
 	pointVisible(x:number, y:number) {
 		return (x >= this.origin.x && x < this.origin.x + this._width) && (y >= this.origin.y && y < this.origin.y + this._height);
 	}
+
+	isValidNumber(n:number):boolean {
+		return typeof n == 'number' && !isNaN(n) && isFinite(n)
+	}
 }
+
