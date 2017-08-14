@@ -315,6 +315,37 @@ export class Viewport {
 		);
 	}
 
+	fitText(text:string, maxWidth:number) {
+		const lines = [];
+		const words = text.split(' ').reverse();
+
+		while(words.length > 0) {
+			let line = '';
+			let word = words.pop();
+
+			while(word && this.context.measureText(line + ' ' + word).width < maxWidth) {
+				line += (' ' + word);
+				word = words.pop();
+			}
+
+			if(word) {
+				words.push(word);
+			}
+
+			lines.push(line.trim());
+		}
+
+		return lines.join("\n");
+	}
+
+	fillText(text:string, x:number, y:number) {
+		const lineHeight = this.context.measureText("M").width * 1.2;
+
+		text.split("\n").forEach((line, i) => {
+			this.context.fillText(line.trim(), x, y + i*lineHeight);
+		});
+	}
+
 
 }
 
