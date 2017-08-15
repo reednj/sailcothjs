@@ -1,5 +1,5 @@
 {
-  "name": "sailclothjs",
+  "name": "sailcloth",
   "version": "1.2.5",
   "main": "lib/sailcloth.js",
   "author": "Nathan Reed <reednj@gmail.com>",
