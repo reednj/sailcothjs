@@ -1,7 +1,7 @@
 {
   "name": "sailcloth",
-  "version": "1.2.6",
-  "description": "a <canvas> viewport to render huge worlds",
+  "version": "1.2.7",
+  "description": "a <canvas> library to render huge worlds",
   "main": "lib/sailcloth.js",
   "author": "Nathan Reed <reednj@gmail.com>",
   "license": "MIT",
