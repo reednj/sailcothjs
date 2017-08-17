@@ -53,3 +53,32 @@ export class Rect {
 	}
 }
 
+export class Vector {
+	_x:number;
+	_y:number;
+	constructor(x:number, y:number) {
+		this._x = x;
+		this._y = y;
+	}
+
+	get x() {
+		return this._x;
+	}
+
+	get y() {
+		return this._y;
+	}
+
+	get size() {
+		return Math.sqrt(Math.pow(this._x, 2) + Math.pow(this._y, 2));
+	}
+
+	toUnit():Vector {
+		return new Vector(this.x / this.size, this.y / this.size);
+	}
+
+	toObject():Object {
+		return {x: this.x, y: this.y};
+	}
+}
+
