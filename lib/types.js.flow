@@ -61,15 +61,15 @@ export class Vector {
 		this._y = y;
 	}
 
-	get x() {
+	get x():number {
 		return this._x;
 	}
 
-	get y() {
+	get y():number {
 		return this._y;
 	}
 
-	get size() {
+	get size():number {
 		return Math.sqrt(Math.pow(this._x, 2) + Math.pow(this._y, 2));
 	}
 
