@@ -226,7 +226,7 @@ export class Viewport {
 	}
 
 	get isSlow():boolean {
-		return this.averageFrameDuration > 50;
+		return this.averageFrameDuration > 30;
 	}
 
 	renderObjects(renderQueue:IRenderable[], sinceLastFrame:number) {
