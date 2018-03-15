@@ -64,7 +64,8 @@ export class Viewport {
     options:Object;
     tick:number;
     waitingForFrame:boolean;
-    lastFrameTime:?Date;
+	lastFrameTime:?Date;
+	averageFrameDuration:number;
     renderQueueChanged:boolean;
     renderQueue:Object[];
     canvas:HTMLCanvasElement;
@@ -213,7 +214,8 @@ export class Viewport {
 		var currentTime = new Date();
 		var sinceLastFrame = currentTime - (this.lastFrameTime || currentTime);
 		this.lastFrameTime = currentTime;
-
+		this.averageFrameDuration = sinceLastFrame * 0.2 + (this.averageFrameDuration||sinceLastFrame) * 0.8;
+		
 		this.renderObjects(this.renderQueue, sinceLastFrame);
 
 		if(this.options.autoRedraw === true) {
