@@ -319,6 +319,7 @@ var Viewport = exports.Viewport = function () {
 		value: function redraw() {
 			this.tick++;
 			this.waitingForFrame = false;
+			var frameStart = new Date();
 
 			this.clear();
 
@@ -340,7 +341,6 @@ var Viewport = exports.Viewport = function () {
 			var currentTime = new Date();
 			var sinceLastFrame = currentTime - (this.lastFrameTime || currentTime);
 			this.lastFrameTime = currentTime;
-			this.averageFrameDuration = sinceLastFrame * 0.2 + (this.averageFrameDuration || sinceLastFrame) * 0.8;
 
 			this.renderObjects(this.renderQueue, sinceLastFrame);
 
@@ -349,6 +349,9 @@ var Viewport = exports.Viewport = function () {
 			}
 
 			this.renderQueueChanged = false;
+
+			var frameDuration = new Date() - frameStart;
+			this.averageFrameDuration = frameDuration * 0.1 + (this.averageFrameDuration || frameDuration) * 0.9;
 		}
 	}, {
 		key: "renderObjects",
