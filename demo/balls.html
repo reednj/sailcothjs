@@ -12,6 +12,16 @@
         #canvas {
             border: 1px gray solid;
         }
+
+        div.info {
+            font-family:arial;
+            margin-bottom: 8px;
+        }
+
+        div.info span {
+            font-weight: bold;
+
+        }
 	</style>
 
 
@@ -26,6 +36,10 @@
 </head>
 
 <body>
+    <div class='info'>
+        balls: <span id='ball-count'></span> | 
+        ms/frame: <span id='frame-ms'></span>
+    </div>
     <canvas id='canvas' width='400' height='300'></canvas>
 </body>
 

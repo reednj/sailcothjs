@@ -41,6 +41,11 @@ var App = exports.App = function () {
                 _this.removeBall();
             }
         }, 500);
+
+        setInterval(function () {
+            document.getElementById('ball-count').innerHTML = _this.balls.length.toString();
+            document.getElementById('frame-ms').innerHTML = 0.0;
+        }, 1000);
     }
 
     _createClass(App, [{

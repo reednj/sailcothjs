@@ -20,6 +20,11 @@ export class App {
                 this.removeBall();
             }
         }, 500);
+
+        setInterval(() => {
+            document.getElementById('ball-count').innerHTML = this.balls.length.toString();
+            document.getElementById('frame-ms').innerHTML = 0.0;
+        }, 1000);
     }
 
     addBall() {
