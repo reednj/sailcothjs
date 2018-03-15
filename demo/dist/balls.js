@@ -29,22 +29,83 @@ var App = exports.App = function () {
         _classCallCheck(this, App);
 
         var element = document.getElementById('canvas');
-        this.viewport = new Viewport.Viewport(element, {});
+        this.viewport = new Viewport.Viewport(element, {
+            onRedraw: function onRedraw(v) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = _this.balls[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var ball = _step.value;
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+
+                        try {
+                            for (var _iterator2 = _this.balls[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var targetBall = _step2.value;
+
+                                if (ball == targetBall) {
+                                    continue;
+                                }
+
+                                var dist = ball.distTo(targetBall);
+
+                                if (dist < 100) {
+                                    ball.color = 'red';
+                                } else {
+                                    ball.color = '#fd4';
+                                }
+                            }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            }
+        });
+
         this.center = this.viewport.center;
         this.viewport.start();
         this.balls = this.balls || [];
 
         setInterval(function () {
-            if (_this.balls.length < 10) {
-                _this.addBall();
-            } else {
+            _this.addBall();
+
+            if (_this.viewport.averageFrameDuration > 50) {
+                _this.removeBall();
                 _this.removeBall();
             }
-        }, 500);
+        }, 100);
 
         setInterval(function () {
             document.getElementById('ball-count').innerHTML = _this.balls.length.toString();
-            document.getElementById('frame-ms').innerHTML = 0.0;
+            document.getElementById('frame-ms').innerHTML = _this.viewport.averageFrameDuration;
         }, 1000);
     }
 
@@ -92,6 +153,11 @@ var BouncingBall = function (_Viewport$ViewportObj) {
         key: 'randomRange',
         value: function randomRange(from, to) {
             return (to - from) * Math.random() + from;
+        }
+    }, {
+        key: 'distTo',
+        value: function distTo(o) {
+            return Math.sqrt(Math.pow(o.x - this.x, 2) + Math.pow(o.y - this.y, 2));
         }
     }, {
         key: 'render',
@@ -385,6 +451,7 @@ var Viewport = exports.Viewport = function () {
 			var currentTime = new Date();
 			var sinceLastFrame = currentTime - (this.lastFrameTime || currentTime);
 			this.lastFrameTime = currentTime;
+			this.averageFrameDuration = sinceLastFrame * 0.2 + (this.averageFrameDuration || sinceLastFrame) * 0.8;
 
 			this.renderObjects(this.renderQueue, sinceLastFrame);
 
@@ -525,6 +592,11 @@ var Viewport = exports.Viewport = function () {
 			text.split("\n").forEach(function (line, i) {
 				_this4.context.fillText(line.trim(), x, y + i * lineHeight);
 			});
+		}
+	}, {
+		key: "isSlow",
+		get: function get() {
+			return this.averageFrameDuration > 30;
 		}
 	}, {
 		key: "center",

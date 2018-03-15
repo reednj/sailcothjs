@@ -340,6 +340,7 @@ var Viewport = exports.Viewport = function () {
 			var currentTime = new Date();
 			var sinceLastFrame = currentTime - (this.lastFrameTime || currentTime);
 			this.lastFrameTime = currentTime;
+			this.averageFrameDuration = sinceLastFrame * 0.2 + (this.averageFrameDuration || sinceLastFrame) * 0.8;
 
 			this.renderObjects(this.renderQueue, sinceLastFrame);
 
@@ -480,6 +481,11 @@ var Viewport = exports.Viewport = function () {
 			text.split("\n").forEach(function (line, i) {
 				_this4.context.fillText(line.trim(), x, y + i * lineHeight);
 			});
+		}
+	}, {
+		key: "isSlow",
+		get: function get() {
+			return this.averageFrameDuration > 30;
 		}
 	}, {
 		key: "center",

@@ -8,22 +8,42 @@ export class App {
     constructor() {
         
         var element = document.getElementById('canvas')
-        this.viewport = new Viewport.Viewport(element, {});
+        this.viewport = new Viewport.Viewport(element, {
+            onRedraw: v => {
+                for(var ball of this.balls) {
+                    for(var targetBall of this.balls) {
+                        if(ball == targetBall) {
+                            continue;
+                        }
+
+                        var dist = ball.distTo(targetBall);
+
+                        if(dist < 100) {
+                            ball.color = 'red';
+                        } else {
+                            ball.color = '#fd4';
+                        }
+                    }
+                }
+            }
+        });
+
         this.center = this.viewport.center;
         this.viewport.start();
         this.balls = this.balls || [];
         
         setInterval(() => {
-            if(this.balls.length < 10) {
-                this.addBall();
-            } else {
+            this.addBall();
+
+            if(this.viewport.averageFrameDuration > 50) {
+                this.removeBall();
                 this.removeBall();
             }
-        }, 500);
+        }, 100);
 
         setInterval(() => {
             document.getElementById('ball-count').innerHTML = this.balls.length.toString();
-            document.getElementById('frame-ms').innerHTML = 0.0;
+            document.getElementById('frame-ms').innerHTML = this.viewport.averageFrameDuration;
         }, 1000);
     }
 
@@ -57,6 +77,10 @@ class BouncingBall extends Viewport.ViewportObject {
     // put this somewhere better?
     randomRange(from:number, to:number):number {
          return (to - from) * Math.random() + from;
+    }
+
+    distTo(o) {
+        return Math.sqrt(Math.pow(o.x - this.x, 2) + Math.pow(o.y - this.y, 2));
     }
 
     render(viewport:Viewport.Viewport, sinceLastFrame:number) {
