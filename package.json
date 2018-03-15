@@ -20,8 +20,10 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
     "babel-preset-env": "^1.6.0",
     "babel-preset-flow": "^6.23.0",
+    "browserify": "^16.1.1",
     "flow-copy-source": "^1.2.0",
-    "rimraf": "^2.6.1"
+    "rimraf": "^2.6.1",
+    "babel-cli": "^6.26.0"
   },
   "dependencies": {
     "requirejs": "^2.3.3"
