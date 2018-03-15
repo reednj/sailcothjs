@@ -195,7 +195,7 @@ export class Viewport {
 	redraw() {
 		this.tick++;
 		this.waitingForFrame = false;
-		var frameStart = Date.now();
+		var frameStart = new Date();
 
 		this.clear();
 
@@ -224,12 +224,12 @@ export class Viewport {
 
 		this.renderQueueChanged = false;
 
-		var frameDuration = Date.now() - frameStart;
+		var frameDuration = (new Date()) - frameStart;
 		this.averageFrameDuration = frameDuration * 0.1 + (this.averageFrameDuration||frameDuration) * 0.9;
 	}
 
 	get isSlow():boolean {
-		return this.averageFrameDuration > 30;
+		return this.averageFrameDuration > 12;
 	}
 
 	renderObjects(renderQueue:IRenderable[], sinceLastFrame:number) {
