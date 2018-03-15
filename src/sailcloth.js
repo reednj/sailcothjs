@@ -195,6 +195,7 @@ export class Viewport {
 	redraw() {
 		this.tick++;
 		this.waitingForFrame = false;
+		var frameStart = Date.now();
 
 		this.clear();
 
@@ -214,8 +215,7 @@ export class Viewport {
 		var currentTime = new Date();
 		var sinceLastFrame = currentTime - (this.lastFrameTime || currentTime);
 		this.lastFrameTime = currentTime;
-		this.averageFrameDuration = sinceLastFrame * 0.2 + (this.averageFrameDuration||sinceLastFrame) * 0.8;
-		
+	
 		this.renderObjects(this.renderQueue, sinceLastFrame);
 
 		if(this.options.autoRedraw === true) {
@@ -223,6 +223,9 @@ export class Viewport {
 		}
 
 		this.renderQueueChanged = false;
+
+		var frameDuration = Date.now() - frameStart;
+		this.averageFrameDuration = frameDuration * 0.1 + (this.averageFrameDuration||frameDuration) * 0.9;
 	}
 
 	get isSlow():boolean {
