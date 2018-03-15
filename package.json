@@ -7,11 +7,13 @@
   "license": "MIT",
   "repository": "https://github.com/reednj/sailcothjs",
   "scripts": {
-    "build": "npm run build:clean && npm run build:lib && npm run build:flow && npm run build:dist",
-    "build:lib": "babel src -d lib --source-maps && babel src demo/src -d demo/lib  --source-maps",
+    "build": "npm run build:clean && npm run build:lib && npm run build:flow && npm run build:dist && npm run build:demo",
+    "build:lib": "babel src -d lib --source-maps",
     "build:flow": "flow-copy-source -v src lib",
     "build:dist": "browserify . --standalone sailcloth > dist/sailcloth.js",
+    "build:dist:demo": "mkdir -p demo/dist && browserify demo/lib/balls.js --standalone balls > demo/dist/balls.js",
     "build:watch": "babel src demo/src -d demo/lib --source-maps --watch",
+    "build:demo": "babel src demo/src -d demo/lib  --source-maps && npm run build:dist:demo",
     "build:clean": "rimraf lib/* && rimraf demo/lib/* && rimraf dist/*"
   },
   "devDependencies": {

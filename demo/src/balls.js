@@ -9,7 +9,7 @@ export class App {
         
         var element = document.getElementById('canvas')
         this.viewport = new Viewport.Viewport(element, {});
-        this.center = this.viewport.getCenter();
+        this.center = this.viewport.center;
         this.viewport.start();
         this.balls = this.balls || [];
         
