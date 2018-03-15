@@ -225,6 +225,10 @@ export class Viewport {
 		this.renderQueueChanged = false;
 	}
 
+	get isSlow():boolean {
+		return this.averageFrameDuration > 50;
+	}
+
 	renderObjects(renderQueue:IRenderable[], sinceLastFrame:number) {
 		this.context.save();
 		this.context.scale(this._scale, this._scale);
